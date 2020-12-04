@@ -1,0 +1,28 @@
+BEGIN {
+	RS = "\n\n"
+}
+
+$0 ~ / ?byr:/ &&
+$0 ~ / ?iyr:/ &&
+$0 ~ / ?eyr:/ &&
+$0 ~ / ?hgt:/ &&
+$0 ~ / ?hcl:/ &&
+$0 ~ / ?ecl:/ &&
+$0 ~ / ?pid:/ {
+	awker_count++
+}
+
+$0 ~ / ?byr:(19[2-9][0-9]|200[0-2])([[:space:]]|$)/ &&
+$0 ~ / ?iyr:20(1[0-9]|20)([[:space:]]|$)/ &&
+$0 ~ / ?eyr:20(2[0-9]|30)([[:space:]]|$)/ &&
+$0 ~ / ?hgt:(1([5-8][0-9]|9[0-3])cm|(59|6[0-9]|7[0-6])in)([[:space:]]|$)/ &&
+$0 ~ / ?hcl:#[[:xdigit:]]{6}([[:space:]]|$)/ &&
+$0 ~ / ?ecl:(amb|blu|brn|gry|grn|hzl|oth)([[:space:]]|$)/ &&
+$0 ~ / ?pid:[[:digit:]]{9}([[:space:]]|$)/ {
+	awker_part2_count++
+}
+
+END {
+	printf "%d\n", awker_count
+	printf "%d\n", awker_part2_count
+}
