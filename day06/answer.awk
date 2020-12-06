@@ -1,6 +1,5 @@
 BEGIN {
 	RS = "\n\n"
-	FPAT = "[^\n]+"
 }
 
 {
