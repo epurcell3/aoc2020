@@ -17,16 +17,6 @@ END {
 	print adapters[last_adapter]
 }
 
-function max(arr, n) {
-	n = 0
-	for (i in arr) {
-		if (strtonum(i) > n) {
-			n = strtonum(i)
-		}
-	}
-	return n
-}
-
 function paths_to_zero(arr, adapter, _paths) {
 	if (arr[adapter]) return arr[adapter]
 	_paths = 0
@@ -37,4 +27,14 @@ function paths_to_zero(arr, adapter, _paths) {
 	if ((adapter - 2) in arr) _paths += paths_to_zero(arr, adapter - 2)
 	if ((adapter - 3) in arr) _paths += paths_to_zero(arr, adapter - 3)
 	return _paths
+}
+
+function max(arr, n) {
+	n = 0
+	for (i in arr) {
+		if (strtonum(i) > n) {
+			n = strtonum(i)
+		}
+	}
+	return n
 }
