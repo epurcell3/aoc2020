@@ -14,11 +14,9 @@ NR == 1 {
 }
 
 END {
-	delete new_grid
-	delete p2_new_grid
-	build_p2_neighbor_map()
 	changes = 1
 	while (changes) {
+		delete new_grid
 		changes = 0
 		for (row = 1; row <= NR; row++) {
 			for (col = 1; col <= NF; col++) {
@@ -62,10 +60,14 @@ END {
 		}
 	}
 	print occupied_seats
+}
 
+END {
+	build_p2_neighbor_map()
 	occupied_seats = 0
 	changes = 1
 	while (changes) {
+		delete p2_new_grid
 		changes = 0
 		for (row = 1; row <= NR; row++) {
 			for (col = 1; col <= NF; col++) {
