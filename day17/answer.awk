@@ -1,5 +1,6 @@
 BEGIN { 
 	FS = ""
+	SUBSEP = ","
 
 	for (x = -1; x <= 1; x++) {
 		for (y = -1; y <= 1; y++) {
@@ -31,14 +32,14 @@ END {
 		delete inactives
 		delete new_actives
 		for (cube in actives) {
-			n = n_active_neighbors(cube)
+			n = n_active_neighbors(cube, 3, neighbor_d, actives)
 			if (n == 2 || n == 3) {
 				new_actives[cube] = 1
 			}
-			find_relevant_inactives(cube)
+			find_relevant_inactives(cube, 3, neighbor_d, actives, inactives)
 		}
 		for (cube in inactives) {
-			n = n_active_neighbors(cube)
+			n = n_active_neighbors(cube, 3, neighbor_d, actives)
 			if (n == 3) {
 				new_actives[cube] = 1
 			}
@@ -56,14 +57,14 @@ END {
 		delete p2_inactives
 		delete p2_new_actives
 		for (cube in p2_actives) {
-			n = p2_n_active_neighbors(cube)
+			n = n_active_neighbors(cube, 4, p2_neighbor_d, p2_actives)
 			if (n == 2 || n == 3) {
 				p2_new_actives[cube] = 1
 			}
-			p2_find_relevant_inactives(cube)
+			find_relevant_inactives(cube, 4, p2_neighbor_d, p2_actives, p2_inactives)
 		}
 		for (cube in p2_inactives) {
-			n = p2_n_active_neighbors(cube)
+			n = n_active_neighbors(cube, 4, p2_neighbor_d, p2_actives)
 			if (n == 3) {
 				p2_new_actives[cube] = 1
 			}
@@ -76,46 +77,28 @@ END {
 	print length(p2_actives)
 }
 
-function n_active_neighbors(cube, dimensionlity, _n) {
+function n_active_neighbors(cube, cardinality, neighbors, active, _n, _key, _i) {
 	_n = 0;
 	split(cube, coords, SUBSEP)
-	for (neighbor in neighbor_d) {
+	for (neighbor in neighbors) {
 		split(neighbor, deltas, SUBSEP)
-		if ((coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3]) in actives) {
+		_key = (coords[1] + deltas[1])
+		for (_i = 2; _i <= cardinality; _i++) _key = _key SUBSEP (coords[_i] + deltas[_i])
+		if (_key in active) {
 			_n++
 		}
 	}
 	return _n
 }
 
-function find_relevant_inactives(cube, dimensionlity) {
+function find_relevant_inactives(cube, cardinality, neighbors, actives, inactives, _key, _i) {
 	split(cube, coords, SUBSEP)
-	for (neighbor in neighbor_d) {
+	for (neighbor in neighbors) {
 		split(neighbor, deltas, SUBSEP)
-		if (!((coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3]) in actives)) {
-			inactives[coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3]] = 1
-		}
-	}
-}
-
-function p2_n_active_neighbors(cube, _n) {
-	_n = 0;
-	split(cube, coords, SUBSEP)
-	for (neighbor in p2_neighbor_d) {
-		split(neighbor, deltas, SUBSEP)
-		if ((coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3], coords[4] + deltas[4]) in p2_actives) {
-			_n++
-		}
-	}
-	return _n
-}
-
-function p2_find_relevant_inactives(cube) {
-	split(cube, coords, SUBSEP)
-	for (neighbor in p2_neighbor_d) {
-		split(neighbor, deltas, SUBSEP)
-		if (!((coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3], coords[4] + deltas[4]) in p2_actives)) {
-			p2_inactives[coords[1] + deltas[1], coords[2] + deltas[2], coords[3] + deltas[3], coords[4] + deltas[4]] = 1
+		_key = (coords[1] + deltas[1])
+		for (_i = 2; _i <= cardinality; _i++) _key = _key SUBSEP (coords[_i] + deltas[_i])
+		if (!(_key in actives)) {
+			inactives[_key] = 1
 		}
 	}
 }
